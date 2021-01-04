@@ -1,58 +1,42 @@
+# CardiB-Rona-Telebot
 
+I use this mini project as a playground to learn how to use telegram bot. Feel free to try my bot @CardiRonaBot on Telegram. The functionalities are simple:
 
-# python-telegram-bot-heroku
-A guide to hosting a telegram bot created using the python-telegram-bot library with heroku.
-![Deploy your Ember project to Heroku from Github - Philip Mutua ...](https://miro.medium.com/max/3600/1*fIjRtO5P8zc3pjs0E5hYkw.png)
-See the full article explaining the steps [here](https://towardsdatascience.com/how-to-deploy-a-telegram-bot-using-heroku-for-free-9436f89575d2). 
+1. Echoes whatever you say
+2. Typing `/audio` sends back a random audio file to the user
 
-## Getting Started
-Before you begin, you will need a Telegram bot API token from [BotFather](https://t.me/botfather). 
+# Webhook instead of polling
 
-1. Download the three files in this repo: bot.py (containing your python code for the Telegram bot), requirements.txt (containing the python libraries to be installed), and Procfile (containing the command to execute the python file).
-2. Login / [create](https://signup.heroku.com/dc) a Heroku account.
-3. Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git). 
-4. Install the [Heroku CLI](https://devcenter.heroku.com/articles/getting-started-with-python#set-up). 
-5.  Once installed, you can use the _heroku_ command in your terminal / command prompt. Go to the same directory as the files in this repository, and type:
+Much of the source code originates from [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot). However, instead of polling, I used webhook instead. This is because polling is inefficient and the data is not real-time while webhook can act as a push notification, removing the need to constantly check for updates on the Telegram server.
 
-> heroku login
+# Development
 
-A new window will be opened in your browser prompting you to login, so just click on the button.
+1. Install requirements: `pip3 install -r requirements.txt`
 
-6. Once you are logged in, go back to the command line. Type in
-> heroku create
+- You may also consider creating a virtual python environment.
 
-to create your new webapp. Heroku will assign your webapp a name as well as the link to your webapp, which should be of the format [https://{yourherokuappname}.herokuapp.com/.](https://yourherokuappname.herokuapp.com/.) 
+2. Create an environment file: `touch .env`.
 
-7. To the bot.py file, change the TOKEN variable to the API token of your telegram bot, and change the yourherokuappname to the name of your heroku app in the line
+- Copy the contents over, similar to the template below.
+- Use your own credentials. Remember to keep your token information private!
 
-> updater.bot.setWebhook('https://yourherokuappname.herokuapp.com/'  + TOKEN)
+```bash
+TOKEN=1456236133:BAEMGzl4H-ii69FLhmM799cegl2CnRULffk
+URL=https://0511a20g14a3.ngrok.io
+```
 
-8. Next, in your command line, type the following commands in the following order:
+# Deployment
 
-> git init   
-> git add .   
-> git commit -m "first commit"
+## Local
 
-> heroku git:remote -a YourAppName
+1. Download [ngrok](https://ngrok.com/download). Then run `./ngrok http 5000` on one terminal, and `python3 bot.py` in another terminal.
 
-> git push heroku master
+- This opens up your local port to the public, which allows for external requests to be forwarded to your `localhost` endpoint. This is very useful for quick debugging.
+- `localhost` should work fine too if you are testing on the same network.
 
-(Make sure to replace YourAppName with the name of your Heroku webapp)
+## Cloud
 
-You should then see the following messages:
+For production, I used [heroku](heroku.com) instead of ngrok. This way, you don't have to leave your terminal running. And the best part is that heroku is free to use!
 
-![](https://cdn-images-1.medium.com/max/1000/1*y3JH7a7mY4oYFaAjDCA1Ow.png)
-
-In particular, it will say that a Python app is detected and it will install the required libraries in the requirements.txt file using pip. Then, it will read the Procfile which specifies that the bot.py file is to be executed.
-
-9. Go to your conversation with your Telegram bot on Telegram and type /start. The bot should be working now!
-
-Since you are using the free plan on heroku, the bot will sleep after 30 minutes of inactivity. So do expect the bot to take a few seconds to respond to your /start if you are using it more than 30 minutes after it was previously used. Other than that, the bot will respond almost instantaneously~ 
-
-## What to do if your Bot stops responding
-I’ve noticed the bot stops responding after about 24 hours of inactivity (because we are using the free version of Heroku), so if you want to “jolt” the bot awake, one way is to make a change to one of the files (eg. changing the python3 in the procfile to python and vice versa) and then committing the changes with the lines below:
-> git add .   
-> git commit -m "changing python3 to python in Procfile"   
-> git push heroku master
-
-You should see again see the messages about a Python app being detected and once it finishes executing, your bot should revive now!
+- Make sure to add the `Config Vars` key-value pairs, namely `TOKEN` and `URL`.
+- The `URL` will now take the form of `https://cardib-rona-telebot.herokuapp.com`.

@@ -65,7 +65,6 @@ def main():
     updater.start_webhook(listen="0.0.0.0",
                           port=int(PORT),
                           url_path=TOKEN)
-    #updater.bot.setWebhook('https://yourherokuappname.herokuapp.com/' + TOKEN)
     updater.bot.setWebhook(URL + '/' + TOKEN)
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
